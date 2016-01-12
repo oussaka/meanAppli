@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <title>Session Management in NodeJS using Express4.2</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script>
+	$(document).ready(function(){
+	    var email,pass;
+	    $("#submit").click(function(){
+	        email=$("#email").val();
+	        pass=$("#password").val();
+	        /*
+	        * Perform some validation here.
+	        */
+	        $.post("./login",{email:email,pass:pass},function(data){
+	            if(data==='done')          
+	            {
+	                window.location.href="/admin";
+	            }
+	        });
+	    });
+	});
+	</script>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+	  <div class="form-group">
+	    <label for="email">Email address</label>
+	    <input type="email" class="col-sm-2 form-control" id="email" size="40" placeholder="Type your email">
+	  </div>
+	  <div class="form-group">
+	    <label for="password">Password</label>
+	    <input type="password" class="col-sm-2 form-control" id="password" size="40" placeholder="Type your password">
+	  </div>
+	  <button type="submit" id="submit" class="btn btn-default">Submit</button>
+  </body>
+</html>
