@@ -1,6 +1,12 @@
-var express = require('express');
+var express = require('express');                 // create our app w/ express
 var session = require('express-session');
+// var mongoose = require('mongoose');               // mongoose for mongodb
+// var database = require('./config/database');      // load the database config
+var redis           =     require("redis");
+var redisStore      =     require('connect-redis')(session);
 var path = require('path');
+var async = require("async");
+var client = redis.createClient();
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -18,11 +24,22 @@ app.set('view engine', 'ejs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
+app.use(bodyParser.urlencoded({ extended: true }));  // parse application/x-www-form-urlencoded
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({secret: 'shuuuut!'}));
+app.use(session({
+    secret: 'shuuut!',
+    // create new redis store.
+    store: new redisStore({ host: 'localhost', port: 6379, client: client,ttl :  260}),
+    saveUninitialized: false,
+    resave: false
+}));
+
+// configuration ===============================================================
+/*mongoose.connect(database.url, function(err) { 
+                  if(err) throw err;
+                });   // connect to mongoDB database on modulus.io*/
 
 app.use('/', routes);
 app.use('/users', users);

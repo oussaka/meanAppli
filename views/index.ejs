@@ -3,39 +3,67 @@
   <head>
     <title><%= title %></title>
     <title>Session Management in NodeJS using Express4.2</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	
 	<script>
-	$(document).ready(function(){
-	    var email,pass;
-	    $("#submit").click(function(){
-	        email=$("#email").val();
-	        pass=$("#password").val();
-	        /*
-	        * Perform some validation here.
-	        */
-	        $.post("./login",{email:email,pass:pass},function(data){
-	            if(data==='done')          
-	            {
-	                window.location.href="/admin";
-	            }
+	$(document).ready(function() {
+	    $("#username").hide();
+	    $('#login-submit').click(function(e) {
+	      if($(this).attr('value') === 'Register') {
+	        $.post("./register",{
+	               user_name : $("#username").val(),
+	               user_email : $("#useremail").val(),
+	               user_password : $("#password").val()
+	             }, function(data){
+	        if(data.error) {
+	            alert(data.message);
+	        } else {
+	            $("#username").hide();
+	            $("#login-submit").prop('value','Log in');
+	        }
+	    });
+	    } else {
+	        $.post("./login",{ email : $("#useremail").val(),
+	                   		   password : $("#password").val()
+	                   		 }, function(data) {
+					            if(!data.error) {
+					                window.location.href = "/home";
+					            } else {
+					                alert(data.message);
+					            }
 	        });
+	    }
+	    });
+	    $("#reg").click(function(event){
+	        $("#username").show('slow');
+	        $("#login-submit").prop('value','Register');
+	        event.preventDefault();
 	    });
 	});
 	</script>
-    <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
-    <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
+
+	<nav class="navbar navbar-default navbar-fixed-top">
+	  <div class="navbar-header">
+	    <a class="navbar-brand" href="#">
+	        <p>simple node app</p>
+	    </a>
+	    </div>
+	  <div class="container">
+	    <p class="navbar-text navbar-right">Please sign in</a></p>
+	  </div>
+	</nav>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
-	  <div class="form-group">
-	    <label for="email">Email address</label>
-	    <input type="email" class="col-sm-2 form-control" id="email" size="40" placeholder="Type your email">
-	  </div>
-	  <div class="form-group">
-	    <label for="password">Password</label>
-	    <input type="password" class="col-sm-2 form-control" id="password" size="40" placeholder="Type your password">
-	  </div>
-	  <button type="submit" id="submit" class="btn btn-default">Submit</button>
+
+    <div class="form-group" style="margin-top: 100px; width : 400px; margin-left : 50px;">
+	    <input type="text" id="username" placeholder="Name" class="form-control"><br>
+	    <input type="text" id="useremail" placeholder="Email" class="form-control"><br>
+	    <input type="password" id="password" placeholder="Password" class="form-control"><br>
+	    <input type="button" id="login-submit" value="Log In" class="btn btn-primary">&nbsp;<a href="" id="reg">Sign up here </a>
+    </div>
   </body>
 </html>
